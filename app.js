@@ -22,8 +22,14 @@ app.get("/about", (req, res) => {
   res.render("about");
 });
 
-app.get("/post", (req, res) => {
-  res.render("post");
+app.get("/posts/:id", async (req, res) => {
+  const base_url = 'http://localhost:4000';
+  const postdetail = await CleanBlog.findById(req.params.id);
+  res.render('post', {
+    postdetail: postdetail,
+    base_url
+  })
+
 });
 
 app.get("/add_post", (req, res) => {
