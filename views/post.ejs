@@ -7,15 +7,14 @@
 
   
   <!-- Page Header -->
-  <header class="masthead" style="background-image: url('<%= base_url %>/img/post-bg.jpg')">
+  <header class="masthead" style="background-image: url('<%= postdetail.image %>')">
     <div class="overlay"></div>
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="post-heading">
-            <h1><%= postdetail.title %></h1>
-            <h2 class="subheading"><%= postdetail.detail %></h2>
-            <span class="meta"><%= postdetail.dateCreated.toString().substring(0, 15) %></span>
+            
+            
           </div>
         </div>
       </div>
@@ -31,16 +30,8 @@
           <h2 class="section-heading"><%= postdetail.title %></h2>
 
           <p> <%= postdetail.detail %> </p>
-
-        
-
-          
-
-          
-          <a href="#">
-            <img class="img-fluid" src="img/home-bg.jpg" alt="123123">
-          </a>
-         
+          <a href="/posts/edit/<%= postdetail._id %>" class="btn btn-secondary">UPDATE</a>
+          <a href="/posts/<%= postdetail._id %>?_method=DELETE" class="btn btn-danger" onclick="return confirm('Are You Sure ?');">DELETE</a>
         </div>
       </div>
     </div>

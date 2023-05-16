@@ -1,6 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const fileUpload = require("express-fileupload"); //dosya yükleme
+const methodOverride = require("method-override");
 const ejs = require("ejs");
+const fs = require("fs"); //klasör oluşturma
+const pageController = require('./controllers/pageControllers');
+const blogController = require('./controllers/blogControllers');
+
 const app = express();
 const CleanBlog = require("./models/CleanBlog");
 
@@ -12,44 +18,31 @@ mongoose.connect("mongodb://127.0.0.1:27017/cleanblog-test-db", {
 
 //TEMPLATE ENGİNE
 app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 //MiddleWares
 app.use(express.static("public"));
-
-app.get("/about", (req, res) => {
-  res.render("about");
-});
-
-app.get("/posts/:id", async (req, res) => {
-  const base_url = 'http://localhost:4000';
-  const postdetail = await CleanBlog.findById(req.params.id);
-  res.render('post', {
-    postdetail: postdetail,
-    base_url
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(fileUpload());
+app.use(
+  methodOverride("_method", {
+    methods: ["POST", "GET"],
   })
+);
 
-});
+app.get("/about", pageController.getAboutPage);
+app.get("/add_post", pageController.getAddBlogPage);
+app.get("/posts/:id", blogController.getBlog);
+app.get("/", blogController.getAllBlogs);
+app.post("/blogs", blogController.createBlogDetail);
 
-app.get("/add_post", (req, res) => {
-  res.render("add_post");
-});
+app.get("/posts/edit/:id", pageController.getEditBlogPage);
 
-app.get("/", async (req, res) => {
-  const posts = await CleanBlog.find({});
-  res.render("index", {
-    posts: posts,
-  });
-});
+app.put("/posts/:id", blogController.updateBlogDetail);
 
-app.post("/blogs", async (req, res) => {
-  await CleanBlog.create(req.body);
-  res.redirect("/");
-});
+app.delete("/posts/:id", blogController.deleteBlogDetail);
 
 const port = 4000;
-
 app.listen(port, (req, res) => {
   console.log(`Sunucu ${port}'unda başlatıldı`);
 });
